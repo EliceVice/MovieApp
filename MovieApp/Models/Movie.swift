@@ -10,34 +10,24 @@ import UIKit
 struct Movie {
     let name: String
     let category: Category
+    let company: String
+    let description: String
     let releaseDate: Int
-    let feedBacks: [FeedBack]
+    let feedBacks: [Feedback]
     let filmImages: (tableImage: UIImage, mainImage: UIImage)
+    
+    // Property of the average rating
+    var averageRating: Double? {
+        let validRatings = self.feedBacks.compactMap() { $0.rating }
+        
+        // Check if there are any ratings on the movie
+        if validRatings.isEmpty { return nil }
+        
+        // Calculating the average rating
+        let totalRating = validRatings.reduce(0, +)
+        let average = totalRating / Double(validRatings.count)
+        
+        return average
+    }
 }
 
-enum Category: String, CaseIterable {
-    case fantasy  = "Fantasy"
-    case thriller = "Thriller"
-    case horror   = "Horror"
-}
-
-// MARK: Getting the images from the assets
-struct FilmImages {
-    
-    // Fantasies
-    static let lordOfRings1  = (UIImage(named: "tableLordOfTheRings1")!, UIImage(named: "mainLordOfTheRings1")!)
-    static let lordOfRings2  = (UIImage(named: "tableLordOfTheRings2")!, UIImage(named: "mainLordOfTheRings2")!)
-    static let lordOfRings3  = (UIImage(named: "tableLordOfTheRings3")!, UIImage(named: "mainLordOfTheRings3")!)
-    
-    // Horrors
-    static let getOut        = (UIImage(named: "tableGetOut")!, UIImage(named: "mainGetOut")!)
-    static let joker         = (UIImage(named: "tableJoker")!, UIImage(named: "mainJoker")!)
-    static let nowYouSeeMe   = (UIImage(named: "tableNowYouSeeMe")!, UIImage(named: "mainNowYouSeeMe")!)
-    static let split         = (UIImage(named: "tableSplit")!, UIImage(named: "mainSplit")!)
-    
-    // Horrors
-    static let it            = (UIImage(named: "tableIt")!, UIImage(named: "mainIt")!)
-    static let saw           = (UIImage(named: "tableSaw")!, UIImage(named: "mainSaw")!)
-    static let theBlackPhone = (UIImage(named: "tableTheBlackPhone")!, UIImage(named: "mainTheBlackPhone")!)
-    static let theRing       = (UIImage(named: "tableTheRing")!, UIImage(named: "mainTheRing")!)
-}

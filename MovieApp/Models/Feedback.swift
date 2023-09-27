@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FeedBack {
-    let rating: Double
-    let review: String
+struct Feedback {
+    let rating: Double?
+    let review: String?
 }
