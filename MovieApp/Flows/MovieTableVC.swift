@@ -9,17 +9,25 @@ import UIKit
 
 final class MovieTableVC: UITableViewController {
     
-    private var movies: [Movie] { MoviesDataManager.shared.movies }
+    private var movies: [Movie] = MoviesDataManager.shared.movies
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.register(UINib(nibName: "MovieCell", bundle: nil), forCellReuseIdentifier: "MovieCell")
-        
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
     }
     
+    // Updating the movies and reloading the data
+    override func viewWillAppear(_ animated: Bool) {
+        movies = MoviesDataManager.shared.movies
+        tableView.reloadData()
+    }
+    
+    #if DEBUG
+    deinit {
+        print("deinit", self)
+    }
+    #endif
 }
 
 
@@ -31,6 +39,7 @@ extension MovieTableVC {
         Category.allCases.count
     }
     
+    // Getting the number of movies for the corresponding category (the order of sections is same as in 'Category' Model)
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let category = Category.allCases[section]
         let moviesInCategory = movies.filter { $0.category == category }
@@ -67,6 +76,7 @@ extension MovieTableVC {
         return headerView
     }
     
+    // Configuring the cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell", for: indexPath) as? MovieCell else { fatalError("Didn't get the cell") }
         
@@ -95,7 +105,7 @@ extension MovieTableVC {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let storyboard = UIStoryboard(name: "Movies", bundle: nil)
         guard let detailVC = storyboard.instantiateViewController(withIdentifier: "DetailVC") as? DetailVC else {
-            fatalError("Didn't get the controller")
+            fatalError("Didn't get the controller DetailVC")
         }
         
         // Getting the selected movie
@@ -103,30 +113,11 @@ extension MovieTableVC {
         let moviesInCategory = movies.filter { $0.category == category }
         let movie = moviesInCategory[indexPath.row]
         
-        // Passing the movie
-        detailVC.movie = movie
+        // Passing the movieIndex
+        let movieIndex = MoviesDataManager.shared.movies.firstIndex(of: movie)
+        detailVC.movieIndex = movieIndex
         
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 
-
-// MARK: - Custom methods
-
-extension MovieTableVC {
-
-//    private func calculateAverageRating(for movie: Movie) -> Double? {
-//
-//        // Getting existing ratings of the movie
-//        let validRatings = movie.feedBacks.compactMap() { $0.rating }
-//
-//        // Check if there are any ratings on the movie
-//        if validRatings.isEmpty { return nil }
-//
-//        // Calculating the average rating
-//        let totalRating = validRatings.reduce(0, +)
-//        let average = totalRating / Double(validRatings.count)
-//
-//        return average
-//    }
-}

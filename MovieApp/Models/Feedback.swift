@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Feedback {
+struct Feedback: Equatable {
     let rating: Double?
     let review: String?
 }
